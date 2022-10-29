@@ -35,15 +35,10 @@ namespace PH.Controllers
         [HttpGet("BreedNames")]
         public ActionResult BreedNames([Required] string species) {
             IEnumerable<Breed> breeds = _repository.GetSpeciesBreeds(species);
-            string names = "";
-            foreach(Breed item in breeds) {
-                names += item.breed + ",";
-            }
-            names = names.Substring(0, names.Length - 1);
-            return Ok(names);
+            return Ok(breeds.Select(e => e.breed));
         }
 
-        // GET /api/BreedInfo?species=?breed=
+        // GET /api/BreedInfo?species=&breed=
         [HttpGet("BreedInfo")]
         public ActionResult BreedInfo([Required] string species, [Required] string breed) {
             Breed? breed_info = _repository.GetBreed(species, breed);
@@ -57,14 +52,8 @@ namespace PH.Controllers
             // Split the names associated with a breed and retrieve illnesses
             IEnumerable<Illness> illnesses = _repository.GetIllnesses();
             IEnumerable<string> names = illness_names.Split(",");
-            IList<Illness>? associated = new List<Illness>();
-            // Search the illnesses table and return found entries
-            foreach(Illness e in illnesses) {
-                foreach (string n in names) {
-                    if (e.name == n) {associated.Add(e);};
-                }
-            }
-            return Ok(associated);
+            // Return the illnesses matching the given names
+            return Ok(illnesses.Where(i => names.Any(n => n == i.name)));
         }
 
         // POST /api/PetDetails
