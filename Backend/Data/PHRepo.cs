@@ -23,5 +23,9 @@ namespace PH.Data
         public Breed? GetBreed(string species, string breed) {
             return GetSpeciesBreeds(species).FirstOrDefault(animal => animal.breed == breed);
         }
+        // Returns the illnesses information from a comma deliminated string of illness names
+        public IEnumerable<Illness> GetIllnesses() {
+            return _dbContext.Illnesses.ToList<Illness>();
+        }
     }
 }

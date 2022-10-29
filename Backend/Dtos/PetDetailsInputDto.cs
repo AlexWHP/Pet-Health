@@ -1,5 +1,6 @@
 namespace PH.Dtos
 {
+    // For later usage with registering pets and their weights
     public class PetDetailsInputDto
     {
         public string? species { get; set; } 

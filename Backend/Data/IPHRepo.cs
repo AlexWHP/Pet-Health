@@ -7,5 +7,6 @@ namespace PH.Data
         public IEnumerable<Breed> GetAllAnimals();
         public IEnumerable<Breed> GetSpeciesBreeds(string species);
         public Breed? GetBreed(string species, string breed);
+        public IEnumerable<Illness> GetIllnesses();
     }
 }

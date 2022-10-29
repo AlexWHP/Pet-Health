@@ -51,6 +51,22 @@ namespace PH.Controllers
             return NotFound("Not in DB");
         }
 
+        // GET /api/IllnessInfo?illness_names=
+        [HttpGet("IllnessInfo")]
+        public ActionResult IllnessInfo([Required] string illness_names) {
+            // Split the names associated with a breed and retrieve illnesses
+            IEnumerable<Illness> illnesses = _repository.GetIllnesses();
+            IEnumerable<string> names = illness_names.Split(",");
+            IList<Illness>? associated = new List<Illness>();
+            // Search the illnesses table and return found entries
+            foreach(Illness e in illnesses) {
+                foreach (string n in names) {
+                    if (e.name == n) {associated.Add(e);};
+                }
+            }
+            return Ok(associated);
+        }
+
         // POST /api/PetDetails
         [HttpPost("PetDetails")]
         public ActionResult PetDetails(PetDetailsInputDto p) {

@@ -8,5 +8,6 @@ namespace PH.Data
     { 
         public PHDBContext(DbContextOptions<PHDBContext> options) : base(options) { }
         public DbSet<Breed> Breeds { get; set; }
+        public DbSet<Illness> Illnesses { get; set; }
     }
 }
