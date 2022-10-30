@@ -24,6 +24,13 @@ namespace PH.Controllers
             return Ok(breeds);
         }
 
+        // GET /api/SpeciesNames
+        [HttpGet("SpeciesNames")]
+        public ActionResult SpeciesNames() {
+            IEnumerable<Breed> breeds = _repository.GetAllAnimals();
+            return Ok(breeds.Select(e => e.species).Distinct());
+        }
+
         // GET /api/AllBreeds?species=
         [HttpGet("AllBreeds")]
         public ActionResult AllSpeciesBreeds([Required] string species) {
