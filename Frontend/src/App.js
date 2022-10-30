@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 function App() {
   return (
@@ -11,20 +11,6 @@ function App() {
       <hr/>
       <ResultsPage/>
       <hr/>
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
     </div>
   );
 }
@@ -38,114 +24,185 @@ class WelcomePage extends React.Component {
 
   render() {
     return (
-      <header className="Welcome-header">
-        <h1>
-          Welcome to Pet Health!
-        </h1>
-        <p onClick={this.entryClick}>
+      <div className="Welcome-page">
+        <header className="Welcome-header">
+          <h1>
+            Welcome to Pet Health!
+          </h1>
+          <p>
+            Care for all!
+          </p>
+        </header>
+        <p className="Welcome-clickable" onClick={this.entryClick}>
           Get Started!
         </p>
-      </header>
-    );
-  }
+      </div>
+  )}
 }
 
-class EntryPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      speciesNames: [], 
-      breedNames: []
-    };
-  }
+// Root component of the submission page users interact with
+function EntryPage() {
+  // State of the arrays provided by the database
+  const [databaseInfo, setDatabaseInfo] = useState({
+    speciesNames: [], 
+    breedNames: []
+  });
+  // State of the gathered information from the users pet
+  const [animalInfo, setAnimalInfo] = useState({
+    species: "",
+    breed: "",
+    illnesses: [],
+    facts: [],
+  });
 
-  componentDidMount() {
-    this.SpeciesList();
-}
+  // Runs the initialising call for species once
+  useEffect(() => {SpeciesList();}, []);
 
-  SpeciesList() {
-    document.getElementById("SpeciesTable").style.display = "flex";
+  // Updates the state to all of the names of animal species in the database
+  const SpeciesList = () => {
     const fetchPromise = fetch("http://localhost:8081/api/SpeciesNames");
     const streamPromise = fetchPromise.then( (response) => response.json() );
-    streamPromise.then((data) => this.setState({speciesNames: data}));
+    streamPromise.then((data) => setDatabaseInfo(prevState => ({
+      ...prevState, 
+      speciesNames: data
+    })));
   };
-
-  // Species should be a state stored variable
-  BreedList(species) {
-    document.getElementById("BreedsTable").style.display = "flex";
+  // Updates the state to all of the names of animals of a specific species in the database
+  const BreedList = (species) => {
+    setAnimalInfo(prevState => ({...prevState, species: species}));
     const fetchPromise = fetch(`http://localhost:8081/api/BreedNames?species=${species}`);
     const streamPromise = fetchPromise.then( (response) => response.json() );
-    streamPromise.then((data) => this.setState({breedNames: data}));
+   streamPromise.then((data) => setDatabaseInfo(prevState => ({
+    ...prevState, 
+    breedNames: data
+  })));
   };
-
-  // Requires species and breed to be available to it (Use state)
-  EntryForm() {
-
+  // Updates the state AnimalInfo with the databases information on the specific breed
+  const BreedInfo = (breed) => {
+    setAnimalInfo(prevState => ({...prevState, breed: breed}));
+    const fetchPromise = fetch(`http://localhost:8081/api/BreedInfo?species=${animalInfo.species}&breed=${breed}`);
+    const streamPromise = fetchPromise.then( (response) => response.json() );
+    streamPromise.then((data) => setAnimalInfo(prevState => ({
+      ...prevState, 
+      illnesses: data.illnesses, 
+      facts: data.facts
+    })));
   }
 
-  render() {
-    // Populate the species input with available species
-    const species = this.state.speciesNames.map(item => (
-      <td className="Entry-table-form">
-        <button onClick={() => {this.BreedList(item);}}>
-          {item}
-        </button>
-      </td>
+  // TO-DO: Maps the given data to entries for a tables row
+  const tableMapper = (data, func) => {
+    //alert(BreedList())
+    data.map(item => (
+    <td className="Entry-table-form">
+      <button onClick={() => {func(item);}}>
+        {item}
+      </button>
+    </td>
     ));
-    // Populate the breeds input with the selected species
-    const breeds = this.state.breedNames.map(item => (
-      <td className="Entry-table-form">
-        <button>
-          {item}
-        </button>
-      </td>
-    ));
-      // TO-DO: The sub tables can be reduced to react components
-    return (
-      <div className="Welcome-header">
-        <header>
-          Please enter in your pets information below!
-        </header>
-        <div>
-          <table className="Entry-table" id="SpeciesTable">
-            <caption>Species</caption>
-            <tbody>
-              <tr>{species}</tr>
-            </tbody>
-          </table>
-          <table className="Entry-table" id="BreedsTable">
-            <caption>Breeds</caption>
-            <tbody>
-              <tr>{breeds}</tr>
-            </tbody>
-          </table>
-          <table className="Entry-table">
-            <caption>Weight</caption>
-            <tbody>
-              <tr></tr>
-            </tbody>
-          </table>
-          <table className="Entry-table">
-            <caption>Age</caption>
-            <tbody>
-              <tr></tr>
-            </tbody>
-          </table>
-        </div>
+  }
+  // Populate the species input with available species
+  const species = databaseInfo.speciesNames.map(item => (
+    <td className="Entry-table-form">
+      <button onClick={() => {BreedList(item);}}>
+        {item}
+      </button>
+    </td>
+  ));
+  // Populate the breeds input with the selected species
+  const breeds = databaseInfo.breedNames.map(item => (
+    <td className="Entry-table-form">
+      <button onClick={() => {BreedInfo(item);}}>
+        {item}
+      </button>
+    </td>
+  ));
+  const info1 = <td>{animalInfo.illnesses}</td>;
+  const info2 = <td>{animalInfo.facts}</td>;
+  return (
+    <div className="Welcome-header">
+      <header>
+        Please enter in your pets information below!
+      </header>
+      <div>
+      <EntryTable title={"Species"} func={species}/>
+        {/* <EntryTable title={"Species"} func={species}/> */}
+        <EntryTable title={"Breeds"} func={breeds}/>
+        <EntryTable title={"Weight"} func={info1}/>
+        <EntryTable title={"Age"} func={info2}/>
       </div>
-      
+    </div>
+  );
+}
+
+class EntryTable extends React.Component {
+  constructor(props) { super(props); }
+  render() {
+    return (
+      <table className="Entry-table" id="SpeciesTable">
+        <caption>{this.props.title}</caption>
+        <tbody>
+          <tr>{this.props.func}</tr>
+        </tbody>
+      </table>
     );
   }
 }
 
-class ResultsPage extends React.Component {
-  render() {
-    return (
-      <header className="Welcome-header">
-        <p>Results</p>
+// Root component of the results from users submissions
+function ResultsPage() {
+  return (
+    <div className="Welcome-header">
+      <header>
+        Results!
       </header>
-    );
-  }
+      <body>
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <ImageComponent/>
+              </td>
+              <td>
+                <ResultsComponent/>
+              </td>
+            </tr>
+            <tr>
+              <TextComponent/>
+            </tr>
+          </tbody>
+        </table>
+      </body>
+    </div>
+  );
+}
+// Image component
+function ImageComponent() {
+  return (
+    <div>
+      <p>
+        Image
+      </p>
+    </div>
+  );
+}
+// Results section component
+function ResultsComponent() {
+  return (
+    <div>
+      <TextComponent/>
+      <TextComponent/>
+    </div>
+  );
+}
+// Text component
+function TextComponent() {
+  return (
+    <div>
+      <p>
+        Text
+      </p>
+    </div>
+  );
 }
 
 export default App;

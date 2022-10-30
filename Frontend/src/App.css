@@ -27,18 +27,30 @@
   font-size: calc(30px + 3vmin);
 }
 
-.Welcome-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.Welcome-page {
+  background-color: #b3b3b3;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(50px + 3vmin);
+  font-size: 4vw;
   color: white;
 }
-.Welcome-header p {
-  font-size: calc(30px + 3vmin);
+.Welcome-header {
+  background-color: #002050;
+  height: 50%;
+  width: 100%;
+  font-size: 4vw;
+  color: white;
+}
+.Welcome-clickable {
+  border: #000000;
+  border-width: 0.2vw;
+  border-style: solid;
+  padding: 1vw;
+  background-color: #298a26;
+  font-size: 3vw;
+  cursor: pointer;
 }
 
 .App-link {
@@ -55,7 +67,6 @@
 }
 
 .Entry-table {
-  display: none;
   width: 90vw;
   text-align: left;
 }
