@@ -5,6 +5,8 @@ For this, I built the entire backend using the .NET 6.0 framework in C#, alongsi
 This project aims to formalize my backend work and provide an oppurtunity to learn and use React in the frontend 
 (I am already familiar with JavaScript and our original product utilised bootstrap).
 
+Additionally, most pet health apps focus solely on dogs and cats neglecting the owners of other pets, such as rats, rabbits, and ducks/chickens. Whilst out of the scope of the MVP, catering to this is designed to fall primarily onto the database with dynamic dropdowns and sliders allowing for quick implementation.  
+
 ## MVP
 For the minimum value product I aim to produce three core pages, a form page for entering pet information, a results page, and a general pet info page relating to its breed.
 
