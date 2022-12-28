@@ -5,12 +5,12 @@ import React, { useEffect, useState } from 'react';
 function App() {
   return (
     <div className="App" id="root">
-      <WelcomePage/>
-      <hr/>
-      <EntryPage/>
-      <hr/>
-      <ResultsPage/>
-      <hr/>
+      <WelcomePage />
+      <hr />
+      <EntryPage />
+      <hr />
+      <ResultsPage />
+      <hr />
     </div>
   );
 }
@@ -37,14 +37,15 @@ class WelcomePage extends React.Component {
           Get Started!
         </p>
       </div>
-  )}
+    )
+  }
 }
 
 // Root component of the submission page users interact with
 function EntryPage() {
   // State of the arrays provided by the database
   const [databaseInfo, setDatabaseInfo] = useState({
-    speciesNames: [], 
+    speciesNames: [],
     breedNames: []
   });
   // State of the gathered information from the users pet
@@ -56,35 +57,35 @@ function EntryPage() {
   });
 
   // Runs the initialising call for species once
-  useEffect(() => {SpeciesList();}, []);
+  useEffect(() => { SpeciesList(); }, []);
 
   // Updates the state to all of the names of animal species in the database
   const SpeciesList = () => {
     const fetchPromise = fetch("http://localhost:8081/api/SpeciesNames");
-    const streamPromise = fetchPromise.then( (response) => response.json() );
+    const streamPromise = fetchPromise.then((response) => response.json());
     streamPromise.then((data) => setDatabaseInfo(prevState => ({
-      ...prevState, 
+      ...prevState,
       speciesNames: data
     })));
   };
   // Updates the state to all of the names of animals of a specific species in the database
   const BreedList = (species) => {
-    setAnimalInfo(prevState => ({...prevState, species: species}));
+    setAnimalInfo(prevState => ({ ...prevState, species: species }));
     const fetchPromise = fetch(`http://localhost:8081/api/BreedNames?species=${species}`);
-    const streamPromise = fetchPromise.then( (response) => response.json() );
-   streamPromise.then((data) => setDatabaseInfo(prevState => ({
-    ...prevState, 
-    breedNames: data
-  })));
+    const streamPromise = fetchPromise.then((response) => response.json());
+    streamPromise.then((data) => setDatabaseInfo(prevState => ({
+      ...prevState,
+      breedNames: data
+    })));
   };
   // Updates the state AnimalInfo with the databases information on the specific breed
   const BreedInfo = (breed) => {
-    setAnimalInfo(prevState => ({...prevState, breed: breed}));
+    setAnimalInfo(prevState => ({ ...prevState, breed: breed }));
     const fetchPromise = fetch(`http://localhost:8081/api/BreedInfo?species=${animalInfo.species}&breed=${breed}`);
-    const streamPromise = fetchPromise.then( (response) => response.json() );
+    const streamPromise = fetchPromise.then((response) => response.json());
     streamPromise.then((data) => setAnimalInfo(prevState => ({
-      ...prevState, 
-      illnesses: data.illnesses, 
+      ...prevState,
+      illnesses: data.illnesses,
       facts: data.facts
     })));
   }
@@ -93,17 +94,17 @@ function EntryPage() {
   const tableMapper = (data, func) => {
     //alert(BreedList())
     data.map(item => (
-    <td className="Entry-table-form">
-      <button onClick={() => {func(item);}}>
-        {item}
-      </button>
-    </td>
+      <td className="Entry-table-form">
+        <button onClick={() => { func(item); }}>
+          {item}
+        </button>
+      </td>
     ));
   }
   // Populate the species input with available species
   const species = databaseInfo.speciesNames.map(item => (
     <td className="Entry-table-form">
-      <button onClick={() => {BreedList(item);}}>
+      <button onClick={() => { BreedList(item); }}>
         {item}
       </button>
     </td>
@@ -111,7 +112,7 @@ function EntryPage() {
   // Populate the breeds input with the selected species
   const breeds = databaseInfo.breedNames.map(item => (
     <td className="Entry-table-form">
-      <button onClick={() => {BreedInfo(item);}}>
+      <button onClick={() => { BreedInfo(item); }}>
         {item}
       </button>
     </td>
@@ -124,11 +125,11 @@ function EntryPage() {
         Please enter in your pets information below!
       </header>
       <div>
-      <EntryTable title={"Species"} func={species}/>
+        <EntryTable title={"Species"} func={species} />
         {/* <EntryTable title={"Species"} func={species}/> */}
-        <EntryTable title={"Breeds"} func={breeds}/>
-        <EntryTable title={"Weight"} func={info1}/>
-        <EntryTable title={"Age"} func={info2}/>
+        <EntryTable title={"Breeds"} func={breeds} />
+        <EntryTable title={"Weight"} func={info1} />
+        <EntryTable title={"Age"} func={info2} />
       </div>
     </div>
   );
@@ -160,14 +161,14 @@ function ResultsPage() {
           <tbody>
             <tr>
               <td>
-                <ImageComponent/>
+                <ImageComponent />
               </td>
               <td>
-                <ResultsComponent/>
+                <ResultsComponent />
               </td>
             </tr>
             <tr>
-              <TextComponent/>
+              <TextComponent />
             </tr>
           </tbody>
         </table>
@@ -189,8 +190,8 @@ function ImageComponent() {
 function ResultsComponent() {
   return (
     <div>
-      <TextComponent/>
-      <TextComponent/>
+      <TextComponent />
+      <TextComponent />
     </div>
   );
 }
